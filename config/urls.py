@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('courses/', include('courses.urls')),
-    # Bosh sahifa uchun
+    path('', include('users.urls')),
     path('', include('courses.urls')),  # yoki alohida home view yarating
 ]
 if settings.DEBUG:

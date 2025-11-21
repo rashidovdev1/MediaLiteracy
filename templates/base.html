@@ -79,55 +79,71 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-graduation-cap"></i> MediaLit
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'courses:course_list' %}">
-                            <i class="fas fa-book"></i> Kurslar
-                        </a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'courses:my_courses' %}">
-                            <i class="fas fa-bookmark"></i> Mening kurslarim
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ user.username }}
-                            <span class="badge bg-warning text-dark">{{ user.total_points }} ball</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Profil</a></li>
-                            <li><a class="dropdown-item" href="#">Sozlamalar</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Chiqish</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Kirish</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-light btn-sm text-primary ms-2" href="#">Ro'yxatdan o'tish</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-graduation-cap"></i> MediaLit
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'courses:course_list' %}">
+                        <i class="fas fa-book"></i> Kurslar
+                    </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'courses:my_courses' %}">
+                        <i class="fas fa-bookmark"></i> Mening kurslarim
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <!-- USER DROPDOWN -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i> {{ user.username }}
+                        <span class="badge bg-warning text-dark">{{ user.total_points }} ball</span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">Profil</a></li>
+                        <li><a class="dropdown-item" href="#">Sozlamalar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <!-- CHIQISH URL TO'G'RILANDI -->
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Chiqish</a></li>
+                    </ul>
+                </li>
+
+                {% else %}
+
+                <!-- KIRISH -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Kirish</a>
+                </li>
+
+                <!-- REGISTER -->
+                <li class="nav-item">
+                    <a class="nav-link btn btn-light btn-sm text-primary ms-2" href="{% url 'register' %}">
+                        Ro'yxatdan o'tish
+                    </a>
+                </li>
+
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- Messages -->
     {% if messages %}
