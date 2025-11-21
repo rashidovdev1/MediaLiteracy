@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Mening kurslarim{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="display-5 fw-bold mb-4">
+        <i class="fas fa-bookmark text-primary"></i> Mening kurslarim
+    </h1>
+
+    <div class="row">
+        {% for item in courses_with_progress %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.course.title }}</h5>
+                    <p class="card-text text-muted">{{ item.course.description|truncatewords:15 }}</p>
+                    
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-success" style="width: {{ item.progress }}%">
+                            {{ item.progress }}%
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'courses:course_detail' item.course.slug %}" class="btn btn-primary">
+                        Davom ettirish <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <p>Siz hali hech qanday kursni boshlamagansiz.</p>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-primary">
+                    Kurslarni ko'rish
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

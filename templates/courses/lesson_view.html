@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lesson.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Kurslar</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></li>
+            <li class="breadcrumb-item active">{{ lesson.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Video Player -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body p-0">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{ embed_url }}" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{ lesson.title }}</h2>
+                    <p class="text-muted">{{ lesson.description }}</p>
+                    
+                    {% if lesson.materials %}
+                    <div class="alert alert-info mt-3">
+                        <h5><i class="fas fa-file-alt"></i> Qo'shimcha materiallar:</h5>
+                        <pre>{{ lesson.materials }}</pre>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Complete Button -->
+                    {% if not progress.completed %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-check-circle"></i> Darsni tugatish va {{ lesson.points }} ball olish
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-success mt-4">
+                        <i class="fas fa-check-circle"></i> Siz bu darsni {{ progress.completed_at|date:"d.m.Y H:i" }} da tugatgansiz
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Kurs darslari</h5>
+                </div>
+                <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                    {% for l in course.lessons.all %}
+                    <a href="{% url 'courses:lesson_view' course.slug l.id %}" 
+                       class="list-group-item list-group-item-action {% if l.id == lesson.id %}active{% endif %} {% if l.is_completed_by user %}list-group-item-success{% endif %}">
+                        <div class="d-flex justify-content-between">
+                            <span>
+                                <strong>{{ l.order }}.</strong> {{ l.title|truncatewords:5 }}
+                            </span>
+                            {% if l.is_completed_by user %}
+                            <i class="fas fa-check-circle"></i>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="d-grid gap-2 mt-3">
+                {% if prev_lesson %}
+                <a href="{% url 'courses:lesson_view' course.slug prev_lesson.id %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Oldingi dars
+                </a>
+                {% endif %}
+                
+                {% if next_lesson %}
+                <a href="{% url 'courses:lesson_view' course.slug next_lesson.id %}" class="btn btn-primary">
+                    Keyingi dars <i class="fas fa-arrow-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

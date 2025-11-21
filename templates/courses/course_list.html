@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Kurslar ro'yxati{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-5 fw-bold">
+                <i class="fas fa-book-open text-primary"></i> Kurslar
+            </h1>
+            <p class="lead text-muted">Mediasavodxonlik bo'yicha eng yaxshi kurslarni o'rganing</p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <!-- Search -->
+                        <div class="col-md-4">
+                            <input type="text" name="q" class="form-control" placeholder="Kurs nomi bo'yicha qidirish..." value="{{ request.GET.q }}">
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="col-md-3">
+                            <select name="category" class="form-select">
+                                <option value="">Barcha kategoriyalar</option>
+                                {% for category in categories %}
+                                <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Difficulty Filter -->
+                        <div class="col-md-3">
+                            <select name="difficulty" class="form-select">
+                                <option value="">Barcha darajalar</option>
+                                <option value="beginner" {% if selected_difficulty == 'beginner' %}selected{% endif %}>Boshlang'ich</option>
+                                <option value="intermediate" {% if selected_difficulty == 'intermediate' %}selected{% endif %}>O'rta</option>
+                                <option value="advanced" {% if selected_difficulty == 'advanced' %}selected{% endif %}>Murakkab</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Qidirish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="row">
+        {% for course in courses %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-book fa-5x opacity-50"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-info">{{ course.category.name }}</span>
+                        <span class="badge-difficulty bg-{{ course.difficulty }}">
+                            {% if course.difficulty == 'beginner' %}Boshlang'ich
+                            {% elif course.difficulty == 'intermediate' %}O'rta
+                            {% else %}Murakkab{% endif %}
+                        </span>
+                    </div>
+                    
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text text-muted">{{ course.description|truncatewords:15 }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-video"></i> {{ course.get_total_lessons }} ta dars
+                        </small>
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i> {{ course.get_total_duration }} daqiqa
+                        </small>
+                    </div>
+                    
+                    <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-primary w-100">
+                        <i class="fas fa-play-circle"></i> Boshlash
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <p class="mb-0">Hozircha kurslar mavjud emas yoki qidiruv natijalari topilmadi.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .bg-beginner { background-color: #10b981; color: white; }
+    .bg-intermediate { background-color: #f59e0b; color: white; }
+    .bg-advanced { background-color: #ef4444; color: white; }
+</style>
+{% endblock %}
