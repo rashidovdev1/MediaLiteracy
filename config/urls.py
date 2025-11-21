@@ -25,3 +25,5 @@ urlpatterns = [
     # Bosh sahifa uchun
     path('', include('courses.urls')),  # yoki alohida home view yarating
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
